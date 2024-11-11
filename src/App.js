@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { getContract, getSignerContract } from './contract';
 import './App.css'; // CSS dosyasını import edin
-import { FaWallet, FaSun, FaMoon, FaCopy, FaPlusCircle, FaSpinner } from 'react-icons/fa';
+import { FaSun, FaMoon, FaCopy, FaPlusCircle, FaSpinner } from 'react-icons/fa';
 
 function App() {
   const [account, setAccount] = useState('');
@@ -48,6 +48,19 @@ function App() {
       alert('Lütfen MetaMask veya başka bir Ethereum cüzdanı yükleyin.');
     }
   };
+
+  useEffect(() => {
+    const checkConnectedWallet = async () => {
+      if (window.ethereum) {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await provider.listAccounts();
+        if (accounts.length > 0) {
+          setAccount(accounts[0].address);
+        }
+      }
+    };
+    checkConnectedWallet();
+  }, []);
 
   // Form alanlarındaki değişiklikleri yakalama fonksiyonu
   const handleChange = (e) => {
@@ -260,8 +273,6 @@ function App() {
       setTheme(savedTheme);
     }
 
-    fetchAllTokens();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // useEffect ile hesap değiştiğinde tokenleri yeniden çek
@@ -276,6 +287,12 @@ function App() {
   const handleMenuClick = (menu) => {
     setActiveMenu(menu);
     setCurrentPage(1); // Menü değiştiğinde sayfayı sıfırla
+
+    if (menu === 'list') {
+      fetchAllTokens();
+    }
+
+
   };
 
   // Sayfalama hesaplamaları
@@ -296,13 +313,13 @@ function App() {
             className={activeMenu === 'create' ? 'active' : ''}
             onClick={() => handleMenuClick('create')}
           >
-            <FaPlusCircle /> Token Oluştur
+            <FaPlusCircle /> Token Creation
           </li>
           <li
             className={activeMenu === 'list' ? 'active' : ''}
             onClick={() => handleMenuClick('list')}
           >
-            <FaCopy /> Tüm Tokenler
+            <FaCopy /> Token List
           </li>
         </ul>
         <button className="theme-toggle-button" onClick={toggleTheme}>
@@ -311,75 +328,73 @@ function App() {
       </div>
 
       <div className="main-content">
-        <header className="header">
-          <h1>Token Oluşturma Uygulaması</h1>
-          <div className="header-buttons">
-            {account ? (
-              <p className="account-info">Bağlı Hesap: {account}</p>
-            ) : (
-              <button className="connect-button" onClick={connectWallet}>
-                <FaWallet /> Cüzdanı Bağla
-              </button>
-            )}
-          </div>
-        </header>
+      <header className="header">
+  <div className="title-container">
+    <h1>Forge, Harmony Token Creation Tool</h1>
+    <a href="https://kilopi.net" target="_blank" rel="noopener noreferrer" className="kilopi-link">
+      by Kilopi.net
+    </a>
+  </div>
+</header>
+
 
         {activeMenu === 'create' && (
           <section className="create-section">
             <div className="create-container">
               <div className="form-container">
-                <h2>Token Bilgileri</h2>
+                <h2>Token Creation</h2>
                 <form onSubmit={(e) => { e.preventDefault(); createToken(); }}>
                   <div className="form-group">
-                    <label>Token İsmi</label>
+             
                     <input
                       type="text"
                       name="name"
-                      placeholder="Token İsmi"
+                      placeholder="Token Name"
                       value={formData.name}
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label>Token Sembolü</label>
+            
                     <input
                       type="text"
                       name="symbol"
-                      placeholder="Token Sembolü"
+                      placeholder="Token Symbol"
                       value={formData.symbol}
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label>Toplam Arz</label>
+            
                     <input
-                      type="number"
+                      type="text"
                       name="totalSupply"
-                      placeholder="Toplam Arz"
+                      placeholder="Total Supply"
                       value={formData.totalSupply}
                       onChange={handleChange}
                       required
                     />
                   </div>
+                  
                   <div className="form-group">
-                    <label>Ondalık Sayısı</label>
+            
                     <input
-                      type="number"
+                      type="text"
                       name="decimals"
-                      placeholder="Ondalık Sayısı"
+                      placeholder="Decimals"
                       value={formData.decimals}
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label>Web Sitesi</label>
+           
                     <input
                       type="url"
                       name="website"
-                      placeholder="Web Sitesi"
+                      placeholder="Web Address"
                       value={formData.website}
                       onChange={handleChange}
                     />
@@ -391,50 +406,70 @@ function App() {
                       checked={listInAllTokens}
                       onChange={handleChange}
                     />
-                    <label>Tüm Tokenler listesinde göster</label>
+                    <label>Add to "Token List" on the Left Menu</label>
                   </div>
-                  <button type="submit" className="submit-button" disabled={isLoading}>
-                    {isLoading ? <FaSpinner className="spinner" /> : <FaPlusCircle />} {isLoading ? 'Token Oluşturuluyor...' : 'Token Oluştur'}
-                  </button>
+                  <button
+  type="button"
+  className="submit-button"
+  disabled={isLoading}
+  onClick={async () => {
+    if (!account) {
+      await connectWallet(); // First connect the wallet
+    }
+    if (account) {
+      createToken(); // Call createToken if wallet is connected
+    }
+  }}
+>
+  {isLoading ? (
+    <><FaSpinner className="spinner" /> Creating Token...</>
+  ) : !account ? (
+    "Metamask Wallet NOT Connected"
+  ) : (
+    <><FaPlusCircle /> Create Token</>
+  )}
+</button>
+
+{account && (
+  <div className="connected-wallet">
+    <p>Connected Wallet: {account}</p>
+  </div>
+)}
+
                 </form>
               </div>
 
               <div className="instruction-table">
-                <h3>Token Oluşturma Adımları</h3>
+                <h3>Guide</h3>
                 <table>
-                  <thead>
-                    <tr>
-                      <th>Adım</th>
-                      <th>Açıklama</th>
-                    </tr>
-                  </thead>
+                 
                   <tbody>
                     <tr>
-                      <td>1</td>
+        
                       <td><strong>Token İsmi:</strong> Oluşturmak istediğiniz tokenin adını girin.</td>
                     </tr>
                     <tr>
-                      <td>2</td>
+         
                       <td><strong>Token Sembolü:</strong> Tokenin kısa sembolünü (örneğin, MTK) girin.</td>
                     </tr>
                     <tr>
-                      <td>3</td>
+          
                       <td><strong>Toplam Arz:</strong> Oluşturulacak toplam token miktarını girin.</td>
                     </tr>
                     <tr>
-                      <td>4</td>
+            
                       <td><strong>Ondalık Sayısı:</strong> Tokenin ondalık hassasiyetini belirleyin (genellikle 18).</td>
                     </tr>
                     <tr>
-                      <td>5</td>
+             
                       <td><strong>Web Sitesi:</strong> Tokeninizin resmi web sitesinin URL'sini girin.</td>
                     </tr>
                     <tr>
-                      <td>6</td>
+              
                       <td><strong>Listeleme:</strong> Tokeninizin "Tüm Tokenler" listesinde görünmesini istiyor musunuz? Seçiminizi yapın.</td>
                     </tr>
                     <tr>
-                      <td>7</td>
+      
                       <td><strong>Token Oluştur:</strong> Girdiğiniz bilgileri kontrol edin ve "Token Oluştur" butonuna tıklayın.</td>
                     </tr>
                   </tbody>

@@ -149,15 +149,34 @@ body, html, #root, .App {
 /* Başlık (Header) */
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 30px;
 }
 
+.header .title-container {
+  text-align: center;
+}
+
 .header h1 {
-  font-size: 2rem;
+  margin: 0;
+  font-size: 1.5rem;
   color: var(--primary-color);
 }
+
+.kilopi-link {
+  display: block;
+  margin-top: 5px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.kilopi-link:hover {
+  text-decoration: underline;
+}
+
+
 
 .account-info {
   font-size: 1rem;
@@ -195,30 +214,29 @@ body, html, #root, .App {
 
 .create-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
+  justify-content: center;
+  gap: 90px;
 }
 
+.form-container {
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center elements horizontally */
+}
+
+
 .form-container, .instruction-table {
-  flex: 1;
   min-width: 300px;
 }
 
 .form-container h2, .instruction-table h3 {
+  text-align: center;
   margin-bottom: 20px;
   color: var(--primary-color);
   position: relative;
 }
 
-.form-container h2::after, .instruction-table h3::after {
-  content: '';
-  width: 40px;
-  height: 3px;
-  background-color: var(--secondary-color);
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-}
 
 .form-group {
   display: flex;
@@ -232,6 +250,8 @@ body, html, #root, .App {
 }
 
 .form-group input {
+  text-align: center;
+  min-width: 450px;
   padding: 10px;
   border: 1px solid var(--input-border);
   border-radius: 5px;
@@ -239,6 +259,10 @@ body, html, #root, .App {
   color: var(--text-color);
   font-size: 1rem;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input::placeholder {
+  text-align: center;
 }
 
 .form-group input:focus {
@@ -272,10 +296,13 @@ body, html, #root, .App {
   cursor: pointer;
   font-size: 1rem;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
   transition: background-color 0.3s ease;
+  margin: 0 auto; /* Centers the button horizontally */
 }
+
 
 .submit-button:hover {
   background-color: var(--button-hover-color);
@@ -304,7 +331,7 @@ body, html, #root, .App {
 .instruction-table th, .instruction-table td {
   padding: 10px;
   border: 1px solid var(--input-border);
-  text-align: left;
+  text-align: center; /* Center align text */
 }
 
 .instruction-table th {
@@ -378,15 +405,7 @@ body, html, #root, .App {
   position: relative;
 }
 
-.all-tokens h2::after {
-  content: '';
-  width: 40px;
-  height: 3px;
-  background-color: var(--secondary-color);
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-}
+
 
 .loading-text, .no-tokens {
   font-size: 1rem;
@@ -483,6 +502,7 @@ body, html, #root, .App {
   .create-container {
     flex-direction: column;
   }
+  
 
   .form-container, .instruction-table {
     flex: 1 1 100%;
@@ -510,4 +530,12 @@ body, html, #root, .App {
     padding: 6px 10px;
     font-size: 0.8rem;
   }
+}
+
+
+.connected-wallet {
+  margin-top: 10px;
+  text-align: center;
+  color: var(--text-color); /* Matches the theme text color */
+  font-size: 0.9rem;
 }
