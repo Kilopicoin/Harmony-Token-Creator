@@ -176,6 +176,8 @@ function App() {
       const totalSupply = await tokenContract.totalSupply();
       const website = await tokenContract.website();
 
+      
+
       const newToken = {
         address: tokenAddr,
         name,
@@ -234,14 +236,16 @@ function App() {
             const name = await tokenContract.name();
             const symbol = await tokenContract.symbol();
             const decimals = await tokenContract.decimals();
+            const decimalsX = decimals.toString();
             const totalSupply = await tokenContract.totalSupply();
+            const formattedTotalSupply = new Intl.NumberFormat('en-US').format(Number(ethers.formatUnits(totalSupply, decimals)));
             const website = await tokenContract.website();
             return {
               address: addr,
               name,
               symbol,
-              decimals,
-              totalSupply: ethers.formatUnits(totalSupply, decimals),
+              decimalsX,
+              formattedTotalSupply,
               website
             };
           } catch (error) {
@@ -250,6 +254,8 @@ function App() {
             return null;
           }
         });
+
+
 
       const results = await Promise.allSettled(tokenPromises);
       const tokens = results
@@ -307,7 +313,6 @@ function App() {
   return (
     <div className={`App ${theme}`}>
       <div className="sidebar">
-        <h2>Menü</h2>
         <ul>
           <li
             className={activeMenu === 'create' ? 'active' : ''}
@@ -323,7 +328,7 @@ function App() {
           </li>
         </ul>
         <button className="theme-toggle-button" onClick={toggleTheme}>
-          {theme === 'light' ? <FaMoon /> : <FaSun />} {theme === 'light' ? 'Karanlık Mod' : 'Aydınlık Mod'}
+          {theme === 'light' ? <FaMoon /> : <FaSun />} {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
         </button>
       </div>
 
@@ -436,6 +441,22 @@ function App() {
   </div>
 )}
 
+{tokenAddress && (
+  <div className={`token-address ${listInAllTokens ? '' : 'hidden'}`}>
+    <h3>{listInAllTokens ? 'Created Token Address:' : 'Created Token Address (Not Added to List):'}</h3>
+    <p>{tokenAddress}</p>
+    <button
+      className="copy-button"
+      onClick={() => {
+        navigator.clipboard.writeText(tokenAddress);
+        alert('Token adresi kopyalandı!');
+      }}
+    >
+      <FaCopy /> Copy
+    </button>
+  </div>
+)}
+
                 </form>
               </div>
 
@@ -446,60 +467,88 @@ function App() {
                   <tbody>
                     <tr>
         
-                      <td><strong>Token İsmi:</strong> Oluşturmak istediğiniz tokenin adını girin.</td>
+                      <td>This dApp works with <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer" className="link">Metamask Wallet</a></td>
                     </tr>
                     <tr>
          
-                      <td><strong>Token Sembolü:</strong> Tokenin kısa sembolünü (örneğin, MTK) girin.</td>
+                      <td>Optimum Token Name Length: 5 to 20 Letters, Example: Kilopi</td>
                     </tr>
                     <tr>
           
-                      <td><strong>Toplam Arz:</strong> Oluşturulacak toplam token miktarını girin.</td>
+                      <td>Optimum Token Symbol Length: 3 to 5 Letters, Example: LOP</td>
                     </tr>
                     <tr>
             
-                      <td><strong>Ondalık Sayısı:</strong> Tokenin ondalık hassasiyetini belirleyin (genellikle 18).</td>
+                      <td>Optimum Token Supply: 100K to 100B, Example: 2000000000</td>
                     </tr>
                     <tr>
              
-                      <td><strong>Web Sitesi:</strong> Tokeninizin resmi web sitesinin URL'sini girin.</td>
+                      <td>Optimum Token Decimals: 2 to 18 Digits, Example: 6</td>
                     </tr>
                     <tr>
               
-                      <td><strong>Listeleme:</strong> Tokeninizin "Tüm Tokenler" listesinde görünmesini istiyor musunuz? Seçiminizi yapın.</td>
+                      <td>Web Address is optional, can be empty or, Example: https://kilopi.net/</td>
                     </tr>
                     <tr>
       
-                      <td><strong>Token Oluştur:</strong> Girdiğiniz bilgileri kontrol edin ve "Token Oluştur" butonuna tıklayın.</td>
+                      <td>Adding to Token List is optional, if YES, your token will show up in the Token List at the Left Menu</td>
                     </tr>
+
+                    <tr>
+      
+                      <td>Total Supply is fixed and new tokens can not be minted</td>
+                    </tr>
+
+                    <tr>
+      
+                      <td>There is no Freeze Authority. There is no Transaction Fee System. There is no Vesting System</td>
+                    </tr>
+
+               
+
+                    <tr>
+      
+                      <td>This tool creates tokens compatible for explorers like Coingecko, Coinmarketcap, Dexscreener, DefiLama etc. without adding any confusing feature</td>
+                    </tr>
+
+                    <tr>
+      
+                      <td>Advanced features can be added to the tokens later on. If you need additional features, please contact info@kilopi.net</td>
+                    </tr>
+
+                    <tr>
+        
+        <td>This dApp is fully open source under <a href="https://github.com/orgs/Kilopicoin/repositories" target="_blank" rel="noopener noreferrer" className="link">Kilopi Repo</a></td>
+      </tr>
+
+      <tr>
+      
+      <td>It is highly recommended to watch the tutorial video</td>
+    </tr>
+
+    <tr>
+        
+        <td><a href="https://github.com/orgs/Kilopicoin/repositories" target="_blank" rel="noopener noreferrer" className="link">Türkçe Anlatım Videosu</a></td>
+      </tr>
+
+      <tr>
+        
+        <td><a href="https://github.com/orgs/Kilopicoin/repositories" target="_blank" rel="noopener noreferrer" className="link">English Tutorial Video</a></td>
+      </tr>
+      
                   </tbody>
                 </table>
               </div>
             </div>
 
-            {/* Oluşturulan Token Adresi */}
-            {tokenAddress && (
-              <div className={`token-address ${listInAllTokens ? '' : 'hidden'}`}>
-                <h3>{listInAllTokens ? 'Oluşturulan Token Adresi:' : 'Oluşturulan Token Adresi (Listeye Eklenmedi):'}</h3>
-                <p>{tokenAddress}</p>
-                <button
-                  className="copy-button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(tokenAddress);
-                    alert('Token adresi kopyalandı!');
-                  }}
-                >
-                  <FaCopy /> Adresi Kopyala
-                </button>
-              </div>
-            )}
+           
           </section>
         )}
 
         {activeMenu === 'list' && (
           <section className="list-section">
             <div className="all-tokens">
-              <h2>Tüm Oluşturulan Tokenler</h2>
+              <h2>Token List</h2>
               {loadingTokens ? (
                 <p className="loading-text">Tokenler yükleniyor...</p>
               ) : allTokens.length > 0 ? (
@@ -508,13 +557,13 @@ function App() {
                     <table>
                       <thead>
                         <tr>
-                          <th>Token İsmi</th>
-                          <th>Sembol</th>
-                          <th>Toplam Arz</th>
-                          <th>Ondalık Sayısı</th>
-                          <th>Web Sitesi</th>
-                          <th>Token Adresi</th>
-                          <th>Kopyala</th>
+                          <th>Name</th>
+                          <th>Symbol</th>
+                          <th>Total Supply</th>
+                          <th>Decimals</th>
+                          <th>Website</th>
+                          <th>Address</th>
+                      
                         </tr>
                       </thead>
                       <tbody>
@@ -522,29 +571,32 @@ function App() {
                           <tr key={token.address}>
                             <td>{token.name}</td>
                             <td>{token.symbol}</td>
-                            <td>{token.totalSupply}</td>
-                            <td>{token.decimals}</td>
+                            <td>{token.formattedTotalSupply}</td>
+                            <td>{token.decimalsX}</td>
                             <td>
                               {token.website ? (
                                 <a href={token.website} target="_blank" rel="noopener noreferrer">
                                   {token.website}
                                 </a>
                               ) : (
-                                'Yok'
+                                'None'
                               )}
                             </td>
-                            <td>{token.address}</td>
-                            <td>
-                              <button
+                            <td>{token.address}
+
+                            <button
                                 className="copy-button"
                                 onClick={() => {
                                   navigator.clipboard.writeText(token.address);
                                   alert('Token adresi kopyalandı!');
                                 }}
                               >
-                                <FaCopy /> Kopyala
+                                <FaCopy /> Copy
                               </button>
+
+
                             </td>
+                          
                           </tr>
                         ))}
                       </tbody>
@@ -558,7 +610,7 @@ function App() {
                       onClick={() => paginate(currentPage - 1)}
                       disabled={currentPage === 1}
                     >
-                      Önceki
+                      Previous
                     </button>
                     {Array.from({ length: totalPages }, (_, index) => (
                       <button
@@ -574,7 +626,7 @@ function App() {
                       onClick={() => paginate(currentPage + 1)}
                       disabled={currentPage === totalPages}
                     >
-                      Sonraki
+                      Next
                     </button>
                   </div>
                 </>

@@ -85,14 +85,14 @@ body, html, #root, .App {
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   transition: background-color 0.3s ease;
+  padding-top: 60px;
 }
 
 .sidebar h2 {
   margin-bottom: 20px;
   font-size: 1.5rem;
   color: var(--primary-color);
-  display: flex;
-  align-items: center;
+  text-align: center;
 }
 
 .sidebar ul {
@@ -151,7 +151,7 @@ body, html, #root, .App {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .header .title-container {
@@ -176,7 +176,15 @@ body, html, #root, .App {
   text-decoration: underline;
 }
 
+.link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 1rem;
+}
 
+.link:hover {
+  text-decoration: underline;
+}
 
 .account-info {
   font-size: 1rem;
@@ -215,7 +223,7 @@ body, html, #root, .App {
 .create-container {
   display: flex;
   justify-content: center;
-  gap: 90px;
+  gap: 60px;
 }
 
 .form-container {
@@ -354,9 +362,7 @@ body, html, #root, .App {
   background-color: var(--secondary-color);
   border: 1px solid var(--input-border);
   border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: center;
 }
 
 .token-address.hidden {
@@ -384,8 +390,8 @@ body, html, #root, .App {
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.9rem;
-  display: flex;
-  align-items: center;
+  margin: 3px;
+  margin-left: 15px;
   gap: 5px;
   transition: background-color 0.3s ease;
 }
@@ -403,6 +409,7 @@ body, html, #root, .App {
   margin-bottom: 20px;
   color: var(--primary-color);
   position: relative;
+  text-align: center;
 }
 
 
@@ -425,7 +432,7 @@ body, html, #root, .App {
 .table-container th, .table-container td {
   padding: 10px;
   border: 1px solid var(--input-border);
-  text-align: left;
+  text-align: center;
 }
 
 .table-container th {
