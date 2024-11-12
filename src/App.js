@@ -389,7 +389,7 @@ function App() {
               </div>
 
               <div className="instruction-table">
-                <h3>Guide</h3>
+                <h2>Guide</h2>
                 <table>
                  
                   <tbody>

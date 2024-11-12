@@ -1,6 +1,6 @@
 /* App.css */
 
-/* CSS Reset ve Temel Stiller */
+/* CSS Reset and Basic Styles */
 * {
   margin: 0;
   padding: 0;
@@ -12,33 +12,33 @@ body, html, #root, .App {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Tema Değişkenleri */
+/* Theme Variables */
 :root {
-  --light-background-color: #f0f4f8; /* Daha açık ve yumuşak bir arka plan rengi */
-  --light-sidebar-color: #ffffff;
-  --light-text-color: #2c3e50; /* Daha koyu ve okunabilir metin rengi */
-  --light-primary-color: #f1c40f; /* Sarı renk */
-  --light-secondary-color: #ecf0f1; /* Hafif gri tonları */
-  --light-button-color: #f1c40f; /* Sarı butonlar */
-  --light-button-hover-color: #d4ac0d; /* Buton hover rengi */
+  --light-background-color: #f5f8fb;
+  --light-sidebar-color: rgba(255, 255, 255, 0.8);
+  --light-text-color: #333;
+  --light-primary-color: #3498db;
+  --light-secondary-color: #e9eff4;
+  --light-button-color: #3498db;
+  --light-button-hover-color: #2980b9;
   --light-button-text-color: #ffffff;
-  --light-input-background: #ffffff;
-  --light-input-border: #bdc3c7;
-  --light-table-header: #f1c40f;
-  --light-table-row-hover: #d1d8e0;
+  --light-input-background: rgba(255, 255, 255, 0.9);
+  --light-input-border: #cfd6de;
+  --light-table-header: #3498db;
+  --light-table-row-hover: rgba(233, 239, 244, 0.5);
 
-  --dark-background-color: #1e1e1e;
-  --dark-sidebar-color: #2c2c2c;
-  --dark-text-color: #f5f5f5;
-  --dark-primary-color: #f1c40f; /* Sarı renk */
-  --dark-secondary-color: #3c3c3c;
-  --dark-button-color: #f1c40f; /* Sarı butonlar */
-  --dark-button-hover-color: #d4ac0d; /* Buton hover rengi */
+  --dark-background-color: #1a1a1a;
+  --dark-sidebar-color: rgba(32, 32, 32, 0.8);
+  --dark-text-color: #dcdcdc;
+  --dark-primary-color: #3498db;
+  --dark-secondary-color: #2c2c2c;
+  --dark-button-color: #3498db;
+  --dark-button-hover-color: #2980b9;
   --dark-button-text-color: #1e1e1e;
-  --dark-input-background: #3c3c3c;
-  --dark-input-border: #555555;
-  --dark-table-header: #f1c40f;
-  --dark-table-row-hover: #2c2c2c;
+  --dark-input-background: rgba(60, 60, 60, 0.9);
+  --dark-input-border: #555;
+  --dark-table-header: #3498db;
+  --dark-table-row-hover: rgba(44, 44, 44, 0.5);
 }
 
 .App.light {
@@ -78,21 +78,15 @@ body, html, #root, .App {
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Yan Menü (Sidebar) */
+/* Sidebar */
 .sidebar {
   width: 250px;
   background-color: var(--sidebar-color);
   padding: 20px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  transition: background-color 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  border-right: 1px solid var(--input-border);
+  backdrop-filter: blur(8px);
   padding-top: 60px;
-}
-
-.sidebar h2 {
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  text-align: center;
 }
 
 .sidebar ul {
@@ -100,11 +94,11 @@ body, html, #root, .App {
 }
 
 .sidebar li {
-  padding: 10px 15px;
+  padding: 12px 15px;
   margin-bottom: 10px;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -113,6 +107,7 @@ body, html, #root, .App {
 .sidebar li:hover {
   background-color: var(--button-hover-color);
   color: var(--button-text-color);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
 }
 
 .sidebar li.active {
@@ -120,61 +115,53 @@ body, html, #root, .App {
   color: var(--button-text-color);
 }
 
+/* Theme Toggle Button */
 .theme-toggle-button {
   margin-top: 20px;
   padding: 10px 20px;
   background-color: var(--button-color);
   color: var(--button-text-color);
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.2s ease;
 }
 
 .theme-toggle-button:hover {
   background-color: var(--button-hover-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Ana İçerik */
+/* Main Content */
 .main-content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
 }
 
-/* Başlık (Header) */
-.header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
+/* Header */
 .header .title-container {
   text-align: center;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: var(--primary-color);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
 }
 
 .kilopi-link {
-  display: block;
-  margin-top: 5px;
   color: var(--primary-color);
   text-decoration: none;
-  font-size: 1rem;
+  font-weight: 500;
 }
 
 .kilopi-link:hover {
   text-decoration: underline;
 }
+
 
 .link {
   color: var(--primary-color);
@@ -186,65 +173,19 @@ body, html, #root, .App {
   text-decoration: underline;
 }
 
-.account-info {
-  font-size: 1rem;
-  color: var(--text-color);
-}
-
-.connect-button {
-  padding: 10px 20px;
-  background-color: var(--button-color);
-  color: var(--button-text-color);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: background-color 0.3s ease;
-}
-
-.connect-button:hover {
-  background-color: var(--button-hover-color);
-}
-
-.connect-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-/* Oluşturma Bölümü */
-.create-section {
-  display: flex;
-  flex-direction: column;
-}
-
+/* Token Creation Section */
 .create-container {
   display: flex;
   justify-content: center;
   gap: 60px;
 }
 
-.form-container {
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center elements horizontally */
-}
-
-
-.form-container, .instruction-table {
-  min-width: 300px;
-}
-
-.form-container h2, .instruction-table h3 {
-  text-align: center;
-  margin-bottom: 20px;
+.form-container h2 {
   color: var(--primary-color);
-  position: relative;
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
 }
-
 
 .form-group {
   display: flex;
@@ -252,31 +193,19 @@ body, html, #root, .App {
   margin-bottom: 15px;
 }
 
-.form-group label {
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
 .form-group input {
-  text-align: center;
-  min-width: 450px;
   padding: 10px;
   border: 1px solid var(--input-border);
-  border-radius: 5px;
+  border-radius: 8px;
   background-color: var(--input-background);
   color: var(--text-color);
   font-size: 1rem;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-group input::placeholder {
-  text-align: center;
-}
-
 .form-group input:focus {
-  outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 5px rgba(255, 214, 10, 0.5); /* Sarı renkte gölge */
+  box-shadow: 0 0 6px rgba(52, 152, 219, 0.4);
 }
 
 .checkbox-group {
@@ -284,67 +213,46 @@ body, html, #root, .App {
   align-items: center;
 }
 
-.checkbox-group input[type="checkbox"] {
-  margin-right: 10px;
-  width: 20px;
-  height: 20px;
-}
-
-.checkbox-group label {
-  font-size: 1rem;
-  color: var(--text-color);
-}
-
+/* Submit Button */
 .submit-button {
-  padding: 10px 20px;
-  background-color: var(--button-color);
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--button-color), var(--button-hover-color));
   color: var(--button-text-color);
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  transition: background-color 0.3s ease;
-  margin: 0 auto; /* Centers the button horizontally */
+  transition: background 0.3s ease, box-shadow 0.2s ease;
+  margin: 0 auto;
 }
-
 
 .submit-button:hover {
-  background-color: var(--button-hover-color);
+  background: linear-gradient(135deg, var(--button-hover-color), var(--button-color));
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.submit-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.spinner {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Talimatlar Tablosu */
+/* Guide Table */
 .instruction-table table {
   width: 100%;
   border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .instruction-table th, .instruction-table td {
-  padding: 10px;
+  padding: 12px;
   border: 1px solid var(--input-border);
-  text-align: center; /* Center align text */
+  text-align: center;
 }
 
 .instruction-table th {
   background-color: var(--table-header);
   color: var(--button-text-color);
+  font-weight: 600;
 }
 
 .instruction-table tr:nth-child(even) {
@@ -355,81 +263,100 @@ body, html, #root, .App {
   background-color: var(--table-row-hover);
 }
 
-/* Oluşturulan Token Adresi */
+/* Token Address */
 .token-address {
   margin-top: 20px;
-  padding: 15px;
+  padding: 20px;
   background-color: var(--secondary-color);
   border: 1px solid var(--input-border);
-  border-radius: 5px;
+  border-radius: 8px;
   text-align: center;
 }
 
-.token-address.hidden {
-  border-color: #ff6666;
-}
-
-.token-address h3 {
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  color: var(--primary-color);
-}
-
-.token-address p {
-  word-break: break-all;
-  margin-right: 20px;
-  color: var(--text-color);
-}
-
+/* Copy Button */
 .copy-button {
   padding: 8px 15px;
-  background-color: var(--button-color);
+  background: linear-gradient(135deg, var(--button-color), var(--button-hover-color));
   color: var(--button-text-color);
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  margin: 3px;
+  transition: background 0.3s ease, box-shadow 0.2s ease;
   margin-left: 15px;
-  gap: 5px;
-  transition: background-color 0.3s ease;
 }
 
 .copy-button:hover {
-  background-color: var(--button-hover-color);
+  background: linear-gradient(135deg, var(--button-hover-color), var(--button-color));
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Listeleme Bölümü */
-.list-section {
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   margin-top: 20px;
 }
 
-.all-tokens h2 {
-  margin-bottom: 20px;
+.page-button {
+  padding: 10px 16px;
+  background: var(--button-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.2s ease;
+}
+
+.page-button:hover {
+  background: var(--button-hover-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.page-button.active {
+  background: var(--button-hover-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+    padding: 15px;
+  }
+
+  .create-container {
+    flex-direction: column;
+  }
+}
+
+
+.instruction-table h2 {
   color: var(--primary-color);
-  position: relative;
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+
+.form-group input::placeholder {
   text-align: center;
 }
 
-
-
-.loading-text, .no-tokens {
-  font-size: 1rem;
-  color: var(--text-color);
+.list-section {
   text-align: center;
 }
 
-.table-container {
-  overflow-x: auto;
-}
 
 .table-container table {
   width: 100%;
   border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .table-container th, .table-container td {
-  padding: 10px;
+  padding: 12px;
   border: 1px solid var(--input-border);
   text-align: center;
 }
@@ -437,6 +364,7 @@ body, html, #root, .App {
 .table-container th {
   background-color: var(--table-header);
   color: var(--button-text-color);
+  font-weight: 600;
 }
 
 .table-container tr:nth-child(even) {
@@ -455,95 +383,3 @@ body, html, #root, .App {
 .table-container a:hover {
   text-decoration: underline;
 }
-
-/* Sayfalama Kontrolleri */
-.pagination {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.page-button {
-  padding: 8px 12px;
-  background-color: var(--button-color);
-  color: var(--button-text-color);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
-}
-
-.page-button:hover {
-  background-color: var(--button-hover-color);
-}
-
-.page-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.page-button.active {
-  background-color: var(--button-hover-color);
-}
-
-/* Duyarlı Tasarım */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 200px;
-    padding: 15px;
-  }
-
-  .main-content {
-    padding: 15px;
-  }
-
-  .header h1 {
-    font-size: 1.5rem;
-  }
-
-  .create-container {
-    flex-direction: column;
-  }
-  
-
-  .form-container, .instruction-table {
-    flex: 1 1 100%;
-  }
-
-  .token-address {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .token-address p {
-    margin-bottom: 10px;
-  }
-
-  .instruction-table th, .instruction-table td {
-    padding: 8px;
-  }
-
-  /* Sayfalama Kontrolleri Mobil İçin */
-  .pagination {
-    gap: 5px;
-  }
-
-  .page-button {
-    padding: 6px 10px;
-    font-size: 0.8rem;
-  }
-}
-
-
-.connected-wallet {
-  margin-top: 10px;
-  text-align: center;
-  color: var(--text-color); /* Matches the theme text color */
-  font-size: 0.9rem;
-}
-
-
