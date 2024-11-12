@@ -4,6 +4,9 @@ import { ethers } from 'ethers';
 import { getContract, getSignerContract } from './contract';
 import './App.css'; // CSS dosyasını import edin
 import { FaSun, FaMoon, FaCopy, FaPlusCircle, FaSpinner } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   const [account, setAccount] = useState('');
@@ -39,13 +42,13 @@ function App() {
         const address = await signer.getAddress();
         setAccount(address);
 
-        alert('Cüzdan başarıyla bağlandı!');
+        toast.success('Wallet Connected!');
       } catch (error) {
         console.error(error);
-        alert('Cüzdan bağlanırken bir hata oluştu.');
+        toast.error('Error, Wallet NOT Connected');
       }
     } else {
-      alert('Lütfen MetaMask veya başka bir Ethereum cüzdanı yükleyin.');
+      toast.error('Please install Metamask');
     }
   };
 
@@ -88,42 +91,31 @@ function App() {
   const createToken = async () => {
     try {
       const { name, symbol, totalSupply, decimals, website } = formData;
-
-      // Girdi kontrolü
+  
       if (!name || !symbol || !totalSupply || !decimals) {
-        alert('Lütfen tüm gerekli alanları doldurun.');
+        toast.error('Please Fill All Fields');
         return;
       }
-
-      // decimals ve totalSupply değerlerini doğru türlere dönüştürün
+  
       const decimalsNumber = parseInt(decimals);
-      if (isNaN(decimalsNumber)) {
-        alert('Ondalık sayısı geçerli bir sayı olmalıdır.');
-        return;
-      }
-
       const totalSupplyNumber = parseInt(totalSupply);
-      if (isNaN(totalSupplyNumber)) {
-        alert('Toplam arz geçerli bir sayı olmalıdır.');
-        return;
-      }
-
+  
       const contract = await getSignerContract();
+      setIsLoading(true);
 
-      // İşlemi gönderme
-      setIsLoading(true); // Yükleme başlatıldı
+      const creationFee = ethers.parseEther("1000");
+  
       const tx = await contract.createToken(
         name,
         symbol,
-        totalSupplyNumber, // parseUnits kaldırıldı
+        totalSupplyNumber,
         decimalsNumber,
-        website
+        website,
+        listInAllTokens,
+        { value: creationFee }
       );
-
-      // İşlemin tamamlanmasını bekleme ve olayları alma
+  
       const receipt = await tx.wait();
-
-      // TokenCreated olayını bulma
       const tokenCreatedEvent = receipt.logs
         .map((log) => {
           try {
@@ -133,87 +125,30 @@ function App() {
           }
         })
         .find((event) => event && event.name === 'TokenCreated');
-
+  
       if (tokenCreatedEvent) {
         const newTokenAddress = tokenCreatedEvent.args.tokenAddress;
         setTokenAddress(newTokenAddress);
-        alert(`Token başarıyla oluşturuldu! Token Adresi: ${newTokenAddress}`);
-
-        if (listInAllTokens) {
-          // Yeni tokeni fetchAllTokens yerine direkt ekle
-          await addTokenToList(newTokenAddress);
-        } else {
-          // Tokeni localStorage'da gizleme listesine ekle
-          addHiddenToken(newTokenAddress);
-        }
+        toast.success(`Token has been created! Address: ${newTokenAddress}`);
       } else {
-        alert('Token oluşturuldu ancak adres alınamadı.');
+        toast.error('Token created but could not retrieve the address.');
       }
     } catch (error) {
       console.error(error);
-      alert('Token oluşturulurken bir hata oluştu.');
+      toast.error('Error, token not created');
     } finally {
-      setIsLoading(false); // Yükleme sona erdi
+      setIsLoading(false);
     }
   };
-
-  // Yeni tokeni listeye ekleme fonksiyonu
-  const addTokenToList = async (tokenAddr) => {
-    try {
-      const ERC20ABI = [
-        "function name() view returns (string)",
-        "function symbol() view returns (string)",
-        "function decimals() view returns (uint8)",
-        "function totalSupply() view returns (uint256)",
-        "function website() view returns (string)"
-      ];
-
-      const provider = new ethers.JsonRpcProvider(RPC);
-      const tokenContract = new ethers.Contract(tokenAddr, ERC20ABI, provider);
-      const name = await tokenContract.name();
-      const symbol = await tokenContract.symbol();
-      const decimals = await tokenContract.decimals();
-      const totalSupply = await tokenContract.totalSupply();
-      const website = await tokenContract.website();
-
-      
-
-      const newToken = {
-        address: tokenAddr,
-        name,
-        symbol,
-        decimals,
-        totalSupply: ethers.formatUnits(totalSupply, decimals),
-        website
-      };
-
-      // Yeni tokeni listenin başına ekle
-      setAllTokens((prevTokens) => [newToken, ...prevTokens]);
-    } catch (error) {
-      console.error(`Yeni tokeni çekerken bir hata oluştu:`, error);
-      alert('Yeni tokeni listeye eklerken bir hata oluştu.');
-    }
-  };
-
-  // Hidden Tokens listesini localStorage'a ekleme fonksiyonu
-  const addHiddenToken = (tokenAddr) => {
-    const hiddenTokens = JSON.parse(localStorage.getItem('hiddenTokens')) || [];
-    if (!hiddenTokens.includes(tokenAddr)) {
-      hiddenTokens.push(tokenAddr);
-      localStorage.setItem('hiddenTokens', JSON.stringify(hiddenTokens));
-    }
-    // Tokeni listede göstermemek için state'i yeniden güncelle
-    setAllTokens((prevTokens) => prevTokens.filter(token => token.address !== tokenAddr));
-  };
+  
 
   // Tüm Tokenleri Çekmek İçin Fonksiyon
   const fetchAllTokens = async () => {
     setLoadingTokens(true);
     try {
       const contract = await getContract(); // Read-only contract instance
-      const allTokenAddresses = await contract.getDeployedTokens();
-
-      // ERC20 ABI'yı tanımlayın (sadece gerekli fonksiyonlar)
+      const listedTokenAddresses = await contract.getListedTokens();
+  
       const ERC20ABI = [
         "function name() view returns (string)",
         "function symbol() view returns (string)",
@@ -221,55 +156,45 @@ function App() {
         "function totalSupply() view returns (uint256)",
         "function website() view returns (string)"
       ];
-
-      const provider = new ethers.JsonRpcProvider(RPC); // RPC URL'nizi ekleyin
-
-      // Hidden Tokens listesini al
-      const hiddenTokens = JSON.parse(localStorage.getItem('hiddenTokens')) || [];
-
-      // Tüm tokenlerin detaylarını çekmek için Promise.allSettled kullanıyoruz
-      const tokenPromises = allTokenAddresses
-        .filter(addr => !hiddenTokens.includes(addr)) // Hidden tokens'ı filtrele
-        .map(async (addr) => {
-          try {
-            const tokenContract = new ethers.Contract(addr, ERC20ABI, provider);
-            const name = await tokenContract.name();
-            const symbol = await tokenContract.symbol();
-            const decimals = await tokenContract.decimals();
-            const decimalsX = decimals.toString();
-            const totalSupply = await tokenContract.totalSupply();
-            const formattedTotalSupply = new Intl.NumberFormat('en-US').format(Number(ethers.formatUnits(totalSupply, decimals)));
-            const website = await tokenContract.website();
-            return {
-              address: addr,
-              name,
-              symbol,
-              decimalsX,
-              formattedTotalSupply,
-              website
-            };
-          } catch (error) {
-            console.error(`Token ${addr} çekerken bir hata oluştu:`, error);
-            // Hatalı tokeni atlamak için null döndür
-            return null;
-          }
-        });
-
-
-
+  
+      const provider = new ethers.JsonRpcProvider(RPC);
+  
+      const tokenPromises = listedTokenAddresses.map(async (addr) => {
+        try {
+          const tokenContract = new ethers.Contract(addr, ERC20ABI, provider);
+          const name = await tokenContract.name();
+          const symbol = await tokenContract.symbol();
+          const decimals = await tokenContract.decimals();
+          const totalSupply = await tokenContract.totalSupply();
+          const formattedTotalSupply = new Intl.NumberFormat('en-US').format(Number(ethers.formatUnits(totalSupply, decimals)));
+          const website = await tokenContract.website();
+          return {
+            address: addr,
+            name,
+            symbol,
+            decimals: decimals.toString(),
+            formattedTotalSupply,
+            website
+          };
+        } catch (error) {
+          console.error(`Error fetching token ${addr}:`, error);
+          return null;
+        }
+      });
+  
       const results = await Promise.allSettled(tokenPromises);
       const tokens = results
         .filter(result => result.status === 'fulfilled' && result.value !== null)
         .map(result => result.value);
       
-      // Tokenleri tersine çevirerek en son oluşturulan tokenin başta olmasını sağla
       setAllTokens([...tokens].reverse());
     } catch (error) {
       console.error(error);
-      alert('Tokenleri çekerken bir hata oluştu.');
+      toast.error('Error fetching tokens');
     }
     setLoadingTokens(false);
   };
+  
 
   // useEffect ile uygulama yüklendiğinde tokenleri çek ve tema kontrolü
   useEffect(() => {
@@ -399,7 +324,7 @@ function App() {
                     <input
                       type="url"
                       name="website"
-                      placeholder="Web Address"
+                      placeholder="Web Address (Optional)"
                       value={formData.website}
                       onChange={handleChange}
                     />
@@ -446,14 +371,17 @@ function App() {
     <h3>{listInAllTokens ? 'Created Token Address:' : 'Created Token Address (Not Added to List):'}</h3>
     <p>{tokenAddress}</p>
     <button
-      className="copy-button"
-      onClick={() => {
-        navigator.clipboard.writeText(tokenAddress);
-        alert('Token adresi kopyalandı!');
-      }}
-    >
-      <FaCopy /> Copy
-    </button>
+  className="copy-button"
+  onClick={(e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    e.preventDefault(); // Prevent form submission
+    navigator.clipboard.writeText(tokenAddress);
+    toast.success('Address copied!');
+  }}
+>
+  <FaCopy /> Copy
+</button>
+
   </div>
 )}
 
@@ -572,7 +500,7 @@ function App() {
                             <td>{token.name}</td>
                             <td>{token.symbol}</td>
                             <td>{token.formattedTotalSupply}</td>
-                            <td>{token.decimalsX}</td>
+                            <td>{token.decimals}</td>
                             <td>
                               {token.website ? (
                                 <a href={token.website} target="_blank" rel="noopener noreferrer">
@@ -588,7 +516,7 @@ function App() {
                                 className="copy-button"
                                 onClick={() => {
                                   navigator.clipboard.writeText(token.address);
-                                  alert('Token adresi kopyalandı!');
+                                  toast.success('Address copied!');
                                 }}
                               >
                                 <FaCopy /> Copy
@@ -631,13 +559,16 @@ function App() {
                   </div>
                 </>
               ) : (
-                <p className="no-tokens">Henüz oluşturulmuş bir token bulunmuyor.</p>
+                <p className="no-tokens">Currently, Token List is empty.</p>
               )}
             </div>
           </section>
         )}
       </div>
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
     </div>
+
+
   );
 }
 

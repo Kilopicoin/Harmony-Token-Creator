@@ -366,7 +366,6 @@ body, html, #root, .App {
 }
 
 .token-address.hidden {
-  background-color: #ffcccc;
   border-color: #ff6666;
 }
 
@@ -546,3 +545,5 @@ body, html, #root, .App {
   color: var(--text-color); /* Matches the theme text color */
   font-size: 0.9rem;
 }
+
+
