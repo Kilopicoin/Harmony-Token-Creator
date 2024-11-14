@@ -23,14 +23,15 @@ function App() {
   const [isLoading, setIsLoading] = useState(false); // Token oluşturma yükleme durumu
   const [activeMenu, setActiveMenu] = useState('create'); // Menü durumu
   const [listInAllTokens, setListInAllTokens] = useState(true); // Checkbox durumu
-  const [theme, setTheme] = useState('light'); // Tema durumu
+  const [theme, setTheme] = useState('dark'); // Tema durumu
 
   // Sayfalama için yeni state değişkenleri
   const [currentPage, setCurrentPage] = useState(1);
   const tokensPerPage = 10; // Her sayfada gösterilecek token sayısı
 
-  const RPC = 'https://api.s0.b.hmny.io'; // Harmony RPC URL'si
-  const correctChainId = parseInt('0x6357d2e0', 16);
+  const RPC = 'https://api.harmony.one'; // Harmony RPC URL'si
+  const correctChainId = parseInt('0x63564c40', 16);
+
 
   // Cüzdanı bağlama fonksiyonu
   const connectWallet = async () => {
@@ -120,7 +121,7 @@ function App() {
 
 
       if (Number(network.chainId) !== correctChainId) {
-        toast.warning('Please connect to the correct chain.');
+        toast.warning('Please connect to the correct chain with Metamask.');
         return false;
       }
       return true;
@@ -279,13 +280,6 @@ function App() {
 
   }, []);
 
-  // useEffect ile hesap değiştiğinde tokenleri yeniden çek
-  useEffect(() => {
-    if (account) {
-      fetchAllTokens();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account]);
 
   // Menü seçimini değiştirme fonksiyonu
   const handleMenuClick = (menu) => {
