@@ -30,6 +30,7 @@ function App() {
   const tokensPerPage = 10; // Her sayfada gösterilecek token sayısı
 
   const RPC = 'https://api.s0.b.hmny.io'; // Harmony RPC URL'si
+  const correctChainId = parseInt('0x6357d2e0', 16);
 
   // Cüzdanı bağlama fonksiyonu
   const connectWallet = async () => {
@@ -51,6 +52,29 @@ function App() {
       toast.error('Please install Metamask');
     }
   };
+
+
+  useEffect(() => {
+    const handleAccountChange = (accounts) => {
+      if (accounts.length > 0) {
+        setAccount(accounts[0]);
+        toast.info('Wallet account changed!');
+      } else {
+        setAccount('');
+        toast.warn('Wallet disconnected');
+      }
+    };
+
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', handleAccountChange);
+
+      // Cleanup on component unmount
+      return () => {
+        window.ethereum.removeListener('accountsChanged', handleAccountChange);
+      };
+    }
+  }, []);
+
 
   useEffect(() => {
     const checkConnectedWallet = async () => {
@@ -87,10 +111,59 @@ function App() {
     localStorage.setItem('theme', newTheme);
   };
 
+
+  const checkNetwork = async () => {
+    if (window.ethereum) {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const network = await provider.getNetwork();
+
+
+
+      if (Number(network.chainId) !== correctChainId) {
+        toast.warning('Please connect to the correct chain.');
+        return false;
+      }
+      return true;
+    }
+    return false;
+  };
+
   // Token oluşturma fonksiyonu
   const createToken = async () => {
+    const isCorrectNetwork = await checkNetwork();
+    if (!isCorrectNetwork) return;
+
     try {
       const { name, symbol, totalSupply, decimals, website } = formData;
+
+      if (name.length < 5 || name.length > 20) {
+        toast.warning('Name is too short or too long');
+        return;
+      }
+
+      if (symbol.length < 3 || symbol.length > 5) {
+        toast.warning('Symbol is too short or too long');
+        return;
+      }
+
+      const totalSupplyNumberX = parseInt(totalSupply);
+    if (totalSupplyNumberX < 100000 || totalSupplyNumberX > 100000000000) {
+      toast.warning('Total Supply is too low or too high');
+      return;
+    }
+
+
+    const decimalsY = parseInt(decimals);
+    if (decimalsY < 2 || decimalsY > 18) {
+      toast.warning('Decimals is too low or too high');
+      return;
+    }
+
+    if (website.length > 50) {
+      toast.warning('Website Address is too long');
+      return;
+    }
+
   
       if (!name || !symbol || !totalSupply || !decimals) {
         toast.error('Please Fill All Fields');
@@ -103,7 +176,7 @@ function App() {
       const contract = await getSignerContract();
       setIsLoading(true);
 
-      const creationFee = ethers.parseEther("1000");
+      const creationFee = ethers.parseEther("970");
   
       const tx = await contract.createToken(
         name,
@@ -356,7 +429,7 @@ function App() {
   ) : !account ? (
     "Metamask Wallet NOT Connected"
   ) : (
-    <><FaPlusCircle /> Create Token</>
+    <><FaPlusCircle /> Create Token ( Requires 1000 ONE )</>
   )}
 </button>
 

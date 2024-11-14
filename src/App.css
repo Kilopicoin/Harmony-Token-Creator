@@ -194,6 +194,7 @@ body, html, #root, .App {
 }
 
 .form-group input {
+  text-align: center;
   padding: 10px;
   border: 1px solid var(--input-border);
   border-radius: 8px;
@@ -382,4 +383,17 @@ body, html, #root, .App {
 
 .table-container a:hover {
   text-decoration: underline;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
