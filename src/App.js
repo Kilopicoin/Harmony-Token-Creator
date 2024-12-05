@@ -523,12 +523,12 @@ function App() {
 
     <tr>
         
-        <td><a href="https://github.com/orgs/Kilopicoin/repositories" target="_blank" rel="noopener noreferrer" className="link">Türkçe Anlatım Videosu</a></td>
+        <td><a href="https://youtu.be/laMTRSxHGGg?si=tpekbXeVgST6DbCJ" target="_blank" rel="noopener noreferrer" className="link">Türkçe Anlatım Videosu</a></td>
       </tr>
 
       <tr>
         
-        <td><a href="https://github.com/orgs/Kilopicoin/repositories" target="_blank" rel="noopener noreferrer" className="link">English Tutorial Video</a></td>
+        <td><a href="https://youtu.be/mWeYT9k733I?si=9BGJLgs-3FfdpdZR" target="_blank" rel="noopener noreferrer" className="link">English Tutorial Video</a></td>
       </tr>
       
                   </tbody>
@@ -545,7 +545,7 @@ function App() {
             <div className="all-tokens">
               <h2>Token List</h2>
               {loadingTokens ? (
-                <p className="loading-text">Tokenler yükleniyor...</p>
+                <p className="loading-text">Loading Tokens...</p>
               ) : allTokens.length > 0 ? (
                 <>
                   <div className="table-container">
@@ -556,7 +556,7 @@ function App() {
                           <th>Symbol</th>
                           <th>Total Supply</th>
                           <th>Decimals</th>
-                          <th>Website</th>
+                          <th>Website <p>( Warning: Websites May be incorrect )</p></th>
                           <th>Address</th>
                       
                         </tr>
